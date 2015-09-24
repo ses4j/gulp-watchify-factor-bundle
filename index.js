@@ -38,12 +38,17 @@ module.exports = function (b, opts, moreTransforms) {
   return bundle;
 
   function bundle(cb) {
+    if (!opts.disableFactoring)
+      var filename = opts.common || 'common.js';
+    else
+      var filename = opts.outputs[0];
+
     var common = b.bundle()
       .on('error', function (err) {
         bundleStream.emit('error', err);
       })
       .pipe(
-        source(opts.common || 'common.js')
+        source(filename)
       )
     bundleStream = merge(common)
       .on('error', function (err) {
